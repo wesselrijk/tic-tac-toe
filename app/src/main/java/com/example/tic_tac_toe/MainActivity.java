@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,14 +15,85 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        game = new Game();
+
+        // tries to see if an instance has been saved
+        if (savedInstanceState != null) {
+            game = (Game) savedInstanceState.getSerializable("Game");
+
+            // create a copy of the tileboard (which has been set private in game)
+            TileState[][] board = game.getBoard();
+
+            // define all buttons
+            Button button1_1 = findViewById(R.id.button1_1);
+            Button button1_2 = findViewById(R.id.button1_2);
+            Button button1_3 = findViewById(R.id.button1_3);
+            Button button2_1 = findViewById(R.id.button2_2);
+            Button button2_2 = findViewById(R.id.button2_2);
+            Button button2_3 = findViewById(R.id.button2_3);
+            Button button3_1 = findViewById(R.id.button3_1);
+            Button button3_2 = findViewById(R.id.button3_2);
+            Button button3_3 = findViewById(R.id.button3_3);
+
+            // set buttons to saved instance
+            if (board[0][0] == TileState.CROSS) {
+                button1_1.setText("x");
+            } else if (board[0][0] == TileState.CIRCLE) {
+                button1_1.setText("o");
+            }
+            if (board[0][1] == TileState.CROSS) {
+                button1_2.setText("x");
+            } else if (board[0][1] == TileState.CIRCLE) {
+                button1_2.setText("o");
+            }
+            if (board[0][2] == TileState.CROSS) {
+                button1_3.setText("x");
+            } else if (board[0][2] == TileState.CIRCLE) {
+                button1_3.setText("o");
+            }
+            if (board[1][0] == TileState.CROSS) {
+                button2_1.setText("x");
+            } else if (board[1][0] == TileState.CIRCLE) {
+                button2_1.setText("o");
+            }
+            if (board[1][1] == TileState.CROSS) {
+                button2_2.setText("x");
+            } else if (board[1][1] == TileState.CIRCLE) {
+                button2_2.setText("o");
+            }
+            if (board[1][2] == TileState.CROSS) {
+                button2_3.setText("x");
+            } else if (board[1][2] == TileState.CIRCLE) {
+                button2_3.setText("o");
+            }
+            if (board[2][0] == TileState.CROSS) {
+                button3_1.setText("x");
+            } else if (board[2][0] == TileState.CIRCLE) {
+                button3_1.setText("o");
+            }
+            if (board[2][1] == TileState.CROSS) {
+                button3_2.setText("x");
+            } else if (board[2][1] == TileState.CIRCLE) {
+                button3_2.setText("o");
+            }
+            if (board[2][2] == TileState.CROSS) {
+                button3_3.setText("x");
+            } else if (board[2][2] == TileState.CIRCLE) {
+                button3_3.setText("o");
+            }
+
+        } else {
+            game = new Game();
+        }
     }
 
     public void tileClicked(View view) {
         int id = view.getId();
-        Button clickedButton = findViewById(id);
+        Button clickedButton = (Button) view;
+        TextView errorText = findViewById(R.id.textView2);
         int row = 0;
         int column = 0;
+
+        errorText.setText("");
 
         switch(id) {
             case R.id.button1_1:
@@ -71,7 +144,25 @@ public class MainActivity extends AppCompatActivity {
                 clickedButton.setText("o");
                 break;
             case INVALID:
-                // do something different
+                errorText.setText("Invalid Move");
+                break;
+            case BLANK:
+                break;
+        }
+
+        GameState progress = game.won();
+
+        switch(progress) {
+            case IN_PROGRESS:
+                break;
+            case PLAYER_ONE:
+                errorText.setText("Player one has won!");
+                break;
+            case PLAYER_TWO:
+                errorText.setText("Player two has won!");
+                break;
+            case DRAW:
+                errorText.setText("The game results in a draw.");
                 break;
         }
     }
@@ -98,5 +189,11 @@ public class MainActivity extends AppCompatActivity {
         button3_2.setText("");
         button3_3.setText("");
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("Game", game);
     }
 }
