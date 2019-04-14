@@ -23,8 +23,8 @@ public class Game implements Serializable {
     }
 
     public TileState choose(int row, int column) {
-        movesPlayed++;
         if (board[row][column] == TileState.BLANK) {
+            movesPlayed++;
             if (playerOneTurn) {
                 board[row][column] = TileState.CROSS;
                 playerOneTurn = false;
@@ -35,7 +35,6 @@ public class Game implements Serializable {
                 return TileState.CIRCLE;
             }
         } else {
-            movesPlayed--;
             return TileState.INVALID;
         }
     }
@@ -45,20 +44,22 @@ public class Game implements Serializable {
         if (board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != TileState.BLANK
                 || board[2][0] == board[1][1] && board[2][0] == board[0][2] && board[2][0] != TileState.BLANK ) {
             gameOver = true;// WIN
+            if (playerOneTurn) {
+                return GameState.PLAYER_TWO;
+            } else {
+                return GameState.PLAYER_ONE;
+            }
         }
         // check horizontally and vertically for a winning row of 3
         for (int i = 0; i<BOARD_SIZE; i++) {
             if (board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != TileState.BLANK
                     || board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != TileState.BLANK) {
                 gameOver = true;// WIN
-            }
-        }
-        // see if player one or two has won
-        if (gameOver) {
-            if (playerOneTurn) {
-                return GameState.PLAYER_TWO;
-            } else {
-                return GameState.PLAYER_ONE;
+                if (playerOneTurn) {
+                    return GameState.PLAYER_TWO;
+                } else {
+                    return GameState.PLAYER_ONE;
+                }
             }
         }
         // check number of moves

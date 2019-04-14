@@ -27,12 +27,14 @@ public class MainActivity extends AppCompatActivity {
             Button button1_1 = findViewById(R.id.button1_1);
             Button button1_2 = findViewById(R.id.button1_2);
             Button button1_3 = findViewById(R.id.button1_3);
-            Button button2_1 = findViewById(R.id.button2_2);
+            Button button2_1 = findViewById(R.id.button2_1);
             Button button2_2 = findViewById(R.id.button2_2);
             Button button2_3 = findViewById(R.id.button2_3);
             Button button3_1 = findViewById(R.id.button3_1);
             Button button3_2 = findViewById(R.id.button3_2);
             Button button3_3 = findViewById(R.id.button3_3);
+            TextView errorText = findViewById(R.id.textView2);
+            CharSequence messageDisplayed = savedInstanceState.getCharSequence("messageDisplayed");
 
             // set buttons to saved instance
             if (board[0][0] == TileState.CROSS) {
@@ -81,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
                 button3_3.setText("o");
             }
 
+            errorText.setText(messageDisplayed);
+
+            if (game.won() !=  GameState.IN_PROGRESS){
+                cancelButtons();
+            }
         } else {
             game = new Game();
         }
@@ -165,6 +172,32 @@ public class MainActivity extends AppCompatActivity {
                 errorText.setText("The game results in a draw.");
                 break;
         }
+
+        if (progress != GameState.IN_PROGRESS) {
+            cancelButtons();
+        }
+    }
+
+    public void cancelButtons() {
+        Button button1_1 = findViewById(R.id.button1_1);
+        Button button1_2 = findViewById(R.id.button1_2);
+        Button button1_3 = findViewById(R.id.button1_3);
+        Button button2_1 = findViewById(R.id.button2_1);
+        Button button2_2 = findViewById(R.id.button2_2);
+        Button button2_3 = findViewById(R.id.button2_3);
+        Button button3_1 = findViewById(R.id.button3_1);
+        Button button3_2 = findViewById(R.id.button3_2);
+        Button button3_3 = findViewById(R.id.button3_3);
+
+        button1_1.setClickable(false);
+        button1_2.setClickable(false);
+        button1_3.setClickable(false);
+        button2_1.setClickable(false);
+        button2_2.setClickable(false);
+        button2_3.setClickable(false);
+        button3_1.setClickable(false);
+        button3_2.setClickable(false);
+        button3_3.setClickable(false);
     }
 
     public void resetClicked(View view) {
@@ -189,11 +222,24 @@ public class MainActivity extends AppCompatActivity {
         button3_2.setText("");
         button3_3.setText("");
 
+        button1_1.setClickable(true);
+        button1_2.setClickable(true);
+        button1_3.setClickable(true);
+        button2_1.setClickable(true);
+        button2_2.setClickable(true);
+        button2_3.setClickable(true);
+        button3_1.setClickable(true);
+        button3_2.setClickable(true);
+        button3_3.setClickable(true);
+
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("Game", game);
+
+        TextView messageDisplayed = findViewById(R.id.textView2);
+        outState.putCharSequence("messageDisplayed", messageDisplayed.getText());
     }
 }
