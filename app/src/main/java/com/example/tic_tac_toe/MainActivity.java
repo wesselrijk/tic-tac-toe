@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             CharSequence messageDisplayed = savedInstanceState.getCharSequence(
                     "messageDisplayed");
 
-            // set buttons to saved instance
+            // set buttons on screen accordingly to the saved instance
             if (board[0][0] == TileState.CROSS) {
                 button1_1.setText("x");
             } else if (board[0][0] == TileState.CIRCLE) {
