@@ -1,5 +1,12 @@
 package com.example.tic_tac_toe;
+/*
+The MainActivity for the Tic-Tac-Toe app, contains the Mainactivity class. In onCreate a game is
+set for the user. The user can click buttons in the layout, which make the game play out accordingly
+through the methods included in the MainActivity class tileClicked and resetClicked.
+A method is applied for cancelling all buttons if necessary. The game will be saved in an instance.
+ */
 
+// list of imports
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+// the MainActivity class is instantiated. Within, the Game class is instantiated straight away
 public class MainActivity extends AppCompatActivity {
 
     Game game;
@@ -16,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // tries to see if an instance has been saved
+        // tries to see if an instance has been saved, sets the game to a saved instance
         if (savedInstanceState != null) {
             game = (Game) savedInstanceState.getSerializable("Game");
 
@@ -33,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
             Button button3_1 = findViewById(R.id.button3_1);
             Button button3_2 = findViewById(R.id.button3_2);
             Button button3_3 = findViewById(R.id.button3_3);
-            TextView errorText = findViewById(R.id.textView2);
-            CharSequence messageDisplayed = savedInstanceState.getCharSequence("messageDisplayed");
+            TextView messageText = findViewById(R.id.textView2);
+            CharSequence messageDisplayed = savedInstanceState.getCharSequence(
+                    "messageDisplayed");
 
             // set buttons to saved instance
             if (board[0][0] == TileState.CROSS) {
@@ -82,26 +91,31 @@ public class MainActivity extends AppCompatActivity {
             } else if (board[2][2] == TileState.CIRCLE) {
                 button3_3.setText("o");
             }
-
-            errorText.setText(messageDisplayed);
+            
+            // sets a saved 
+            messageText.setText(messageDisplayed);
 
             if (game.won() !=  GameState.IN_PROGRESS){
                 cancelButtons();
             }
         } else {
+            // set a new game if no instance was saved
             game = new Game();
         }
     }
 
+    // method indicating what happens when a button (tile) is clicked
     public void tileClicked(View view) {
+        // get an id, instantiate a row and a column and get the clickedButton and messageText,
+        // also resets the messageText to contain no text
         int id = view.getId();
-        Button clickedButton = (Button) view;
-        TextView errorText = findViewById(R.id.textView2);
         int row = 0;
         int column = 0;
+        Button clickedButton = (Button) view;
+        TextView messageText = findViewById(R.id.textView2);
+        messageText.setText("");
 
-        errorText.setText("");
-
+        // switch goes over id to find the corresponding row and column for a button
         switch(id) {
             case R.id.button1_1:
                 row = 0;
@@ -141,8 +155,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+        // instantiate a tilestate, which is set in the game,
         TileState state = game.choose(row, column);
 
+        // switch over the tilestate, give a corresponding reaction to each tilestate
         switch(state) {
             case CROSS:
                 clickedButton.setText("x");
@@ -151,33 +167,73 @@ public class MainActivity extends AppCompatActivity {
                 clickedButton.setText("o");
                 break;
             case INVALID:
-                errorText.setText("Invalid Move");
+                messageText.setText("Invalid Move");
                 break;
             case BLANK:
                 break;
         }
 
+        // instantiate a gamestate, which is set in the game
         GameState progress = game.won();
 
+        // switch over the gamestate, give a corresponding reaction to the state of the game
         switch(progress) {
             case IN_PROGRESS:
                 break;
             case PLAYER_ONE:
-                errorText.setText("Player one has won!");
+                messageText.setText("Player one has won!");
                 break;
             case PLAYER_TWO:
-                errorText.setText("Player two has won!");
+                messageText.setText("Player two has won!");
                 break;
             case DRAW:
-                errorText.setText("The game results in a draw.");
+                messageText.setText("The game results in a draw.");
                 break;
         }
 
+        // if the game is over, all puttons will be cancelled
         if (progress != GameState.IN_PROGRESS) {
             cancelButtons();
         }
     }
 
+    // method for when the reset button has been clicked, creates a new game, instantiates all
+    // buttons and sets the text to contain no text and make them clickable, also empties the
+    // text message
+    public void resetClicked(View view) {
+        game = new Game();
+        TextView messageText = findViewById(R.id.textView2);
+        Button button1_1 = findViewById(R.id.button1_1);
+        Button button1_2 = findViewById(R.id.button1_2);
+        Button button1_3 = findViewById(R.id.button1_3);
+        Button button2_1 = findViewById(R.id.button2_1);
+        Button button2_2 = findViewById(R.id.button2_2);
+        Button button2_3 = findViewById(R.id.button2_3);
+        Button button3_1 = findViewById(R.id.button3_1);
+        Button button3_2 = findViewById(R.id.button3_2);
+        Button button3_3 = findViewById(R.id.button3_3);
+        button1_1.setText("");
+        button1_2.setText("");
+        button1_3.setText("");
+        button2_1.setText("");
+        button2_2.setText("");
+        button2_3.setText("");
+        button3_1.setText("");
+        button3_2.setText("");
+        button3_3.setText("");
+        button1_1.setClickable(true);
+        button1_2.setClickable(true);
+        button1_3.setClickable(true);
+        button2_1.setClickable(true);
+        button2_2.setClickable(true);
+        button2_3.setClickable(true);
+        button3_1.setClickable(true);
+        button3_2.setClickable(true);
+        button3_3.setClickable(true);
+        messageText.setText("");
+    }
+
+    // method for cancelling all buttons, instantiates all buttons and cancels them afterwards
     public void cancelButtons() {
         Button button1_1 = findViewById(R.id.button1_1);
         Button button1_2 = findViewById(R.id.button1_2);
@@ -188,7 +244,6 @@ public class MainActivity extends AppCompatActivity {
         Button button3_1 = findViewById(R.id.button3_1);
         Button button3_2 = findViewById(R.id.button3_2);
         Button button3_3 = findViewById(R.id.button3_3);
-
         button1_1.setClickable(false);
         button1_2.setClickable(false);
         button1_3.setClickable(false);
@@ -200,45 +255,11 @@ public class MainActivity extends AppCompatActivity {
         button3_3.setClickable(false);
     }
 
-    public void resetClicked(View view) {
-        game = new Game();
-        Button button1_1 = findViewById(R.id.button1_1);
-        Button button1_2 = findViewById(R.id.button1_2);
-        Button button1_3 = findViewById(R.id.button1_3);
-        Button button2_1 = findViewById(R.id.button2_1);
-        Button button2_2 = findViewById(R.id.button2_2);
-        Button button2_3 = findViewById(R.id.button2_3);
-        Button button3_1 = findViewById(R.id.button3_1);
-        Button button3_2 = findViewById(R.id.button3_2);
-        Button button3_3 = findViewById(R.id.button3_3);
-
-        button1_1.setText("");
-        button1_2.setText("");
-        button1_3.setText("");
-        button2_1.setText("");
-        button2_2.setText("");
-        button2_3.setText("");
-        button3_1.setText("");
-        button3_2.setText("");
-        button3_3.setText("");
-
-        button1_1.setClickable(true);
-        button1_2.setClickable(true);
-        button1_3.setClickable(true);
-        button2_1.setClickable(true);
-        button2_2.setClickable(true);
-        button2_3.setClickable(true);
-        button3_1.setClickable(true);
-        button3_2.setClickable(true);
-        button3_3.setClickable(true);
-
-    }
-
+    // method for saving the instance, saves the gamestate and the displayed message
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("Game", game);
-
         TextView messageDisplayed = findViewById(R.id.textView2);
         outState.putCharSequence("messageDisplayed", messageDisplayed.getText());
     }
