@@ -24,9 +24,6 @@ If one of the players manages to get three tiles in a row, the game will be over
 <img src="ReadmeImages/playerone.jpg" width="250" > <img src="ReadmeImages/playertwo.jpg" width="250" >
 
 The game results in a draw if all tiles have been filled and none of the players have won.
-
-<img src="ReadmeImages/draw.jpg" width="250" >
-
 The game can also be played in landscape mode. The set board will be saved when switching from horizontal to landscape mode.
 
 <img src="ReadmeImages/landscape.jpg">
